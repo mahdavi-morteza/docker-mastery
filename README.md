@@ -74,7 +74,7 @@ sudo sysctl --system
 ## 1) Clone and prepare the config
 
 ```
-git clone <your-repo-url>
+git clone https://github.com/mahdavi-morteza/docker-mastery.git
 cd projects/devops-stack-ci-observability/devops-stack
 ```
 
@@ -396,3 +396,57 @@ Wait 1–3 minutes and refresh.
 ### 4) SonarQube fails due to `vm.max_map_count`
 
 Fix: set `vm.max_map_count=262144` (see Requirements section).
+
+## Proof that everything works and the project is fully functional.
+
+![[docker-compose-ls.png]]
+
+![[docker-compose-ps.png]]
+
+![[docker-images.png]]
+
+![[docker-network-ls.png]]
+
+![[docker-volume-ls.png]]
+
+![[gitea.local.png]]
+
+![[gitea-organization.png]]
+
+![[gitea-teams.png]]
+
+![[grafana.local.png]]
+
+![[grafana-dashboard.png]]
+
+![[grafana-dashboard-2.png]]
+
+![[grafana-explore.png]]
+
+![[jenkins.local.png]]
+
+![[jenkins-config.png]]
+
+![[jenkins-console-output.png]]
+
+![[jenkins-credentials.png]]
+
+![[jenkins-pipline-stage-view.png]]
+
+![[monitoring-proog.png]]
+
+![[prometheus.local.png]]
+
+![[pull-proof.png]]
+
+![[registery-catalog.png]]
+
+![[sonarqube.local.png]]
+
+![[sonarqube-issues.png]]
+
+![[sonarqube-project-view.png]]
+
+![[sonarqube-tokens.png]]
+
+![[tags-proof.png]]
