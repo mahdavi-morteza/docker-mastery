@@ -183,18 +183,20 @@
       "bases:Create new base": false
     }
   },
-  "active": "27176d0e6aa1e826",
+  "active": "c3b722e77eb444e3",
   "lastOpenFiles": [
-    "tags-proof.png",
-    "sonarqube-tokens.png",
-    "sonarqube-project-view.png",
-    "sonarqube-issues.png",
-    "sonarqube.local.png",
-    "registery-catalog.png",
-    "pull-proof.png",
-    "prometheus.local.png",
-    "monitoring-proog.png",
-    "jenkins-pipline-stage-view.png",
-    "jenkins-credentials.png"
+    "assets/tags-proof.png",
+    "assets/sonarqube-tokens.png",
+    "assets/sonarqube-project-view.png",
+    "assets/sonarqube-issues.png",
+    "assets/sonarqube.local.png",
+    "assets/registery-catalog.png",
+    "assets/pull-proof.png",
+    "assets/prometheus.local.png",
+    "assets/monitoring-proog.png",
+    "assets/jenkins-pipline-stage-view.png",
+    "assets/jenkins-credentials.png",
+    "assets",
+    "README.md"
   ]
 }

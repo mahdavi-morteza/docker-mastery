@@ -399,54 +399,54 @@ Fix: set `vm.max_map_count=262144` (see Requirements section).
 
 ## Proof that everything works and the project is fully functional.
 
-![[docker-compose-ls.png]]
+![docker-compose-ls](assets/docker-compose-ls.png)
 
-![[docker-compose-ps.png]]
+![docker-compose-ps](assets/docker-compose-ps.png)
 
-![[docker-images.png]]
+![docker-images](assets/docker-images.png)
 
-![[docker-network-ls.png]]
+![docker-network-ls](assets/docker-network-ls.png)
 
-![[docker-volume-ls.png]]
+![docker-volume-ls](assets/docker-volume-ls.png)
 
-![[gitea.local.png]]
+![gitea.local](assets/gitea.local.png)
 
-![[gitea-organization.png]]
+![gitea-organization](assets/gitea-organization.png)
 
-![[gitea-teams.png]]
+![gitea-teams](assets/gitea-teams.png)
 
-![[grafana.local.png]]
+![grafana.local](assets/grafana.local.png)
 
-![[grafana-dashboard.png]]
+![grafana-dashboard](assets/grafana-dashboard.png)
 
-![[grafana-dashboard-2.png]]
+![grafana-dashboard-2](assets/grafana-dashboard-2.png)
 
-![[grafana-explore.png]]
+![grafana-explore](assets/grafana-explore.png)
 
-![[jenkins.local.png]]
+![jenkins.local](assets/jenkins.local.png)
 
-![[jenkins-config.png]]
+![jenkins-config](assets/jenkins-config.png)
 
-![[jenkins-console-output.png]]
+![jenkins-console-output](assets/jenkins-console-output.png)
 
-![[jenkins-credentials.png]]
+![jenkins-credentials](assets/jenkins-credentials.png)
 
-![[jenkins-pipline-stage-view.png]]
+![jenkins-pipline-stage-view](assets/jenkins-pipline-stage-view.png)
 
-![[monitoring-proog.png]]
+![monitoring-proog](assets/monitoring-proog.png)
 
-![[prometheus.local.png]]
+![prometheus.local](assets/prometheus.local.png)
 
-![[pull-proof.png]]
+![pull-proof](assets/pull-proof.png)
 
-![[registery-catalog.png]]
+![registery-catalog](assets/registery-catalog.png)
 
-![[sonarqube.local.png]]
+![sonarqube.local](assets/sonarqube.local.png)
 
-![[sonarqube-issues.png]]
+![sonarqube-issues](assets/sonarqube-issues.png)
 
-![[sonarqube-project-view.png]]
+![sonarqube-project-view](assets/sonarqube-project-view.png)
 
-![[sonarqube-tokens.png]]
+![sonarqube-tokens](assets/sonarqube-tokens.png)
 
-![[tags-proof.png]]
+![tags-proof](assets/tags-proof.png)
