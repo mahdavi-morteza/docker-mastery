@@ -1,0 +1,9 @@
+.env
+**/*.token
+**/*secret*
+registry/auth/htpasswd
+jenkins_home/
+gitea_data/
+prometheus_data/
+grafana_data/
+*_data/
