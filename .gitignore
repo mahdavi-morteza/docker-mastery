@@ -1,0 +1,6 @@
+.env
+backups/
+*.tar.gz
+registry/auth/htpasswd
+**/secrets/
+**/*_secret*
