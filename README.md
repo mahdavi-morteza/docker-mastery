@@ -1,64 +1,88 @@
-# Run Instructions (Beginner Friendly)
+# DevOps Portfolio Stack (Docker Compose)
 
-This project spins up a complete **CI + Code Quality + Observability** stack with one command.
+A self-hosted DevOps lab built with Docker Compose.
 
-**Included services**
+This project is made for learning and portfolio use. It shows a full local DevOps workflow:
 
-- **Nginx reverse proxy** (single entry on port 80)
-    
-- **Gitea** (Git server)
-    
-- **Jenkins** (CI/CD)
-    
-- **SonarQube Community** + dedicated Postgres DB
-    
-- **Docker Registry** (private registry with basic auth)
-    
-- **Prometheus** + **Grafana**
-    
-- **cAdvisor** + **node-exporter** for metrics
-    
+- source control with **Gitea**
+- CI/CD with **Jenkins**
+- code quality checks with **SonarQube**
+- image publishing to a private **Docker Registry**
+- monitoring with **Prometheus** and **Grafana**
 
-You will also find a **demo app** (`demo-app/`) with a `Jenkinsfile` that:
+It also includes a small **demo app** so you can test the full pipeline from start to finish.
 
-1. runs tests
-    
-2. runs SonarQube scan
-    
-3. builds a Docker image
-    
-4. pushes to your local registry
-    
+> This stack is for local or demo use. It uses simple HTTP and basic credentials. It is not hardened for production.
 
 ---
 
-## 0) Requirements (must-have)
+## What This Project Includes
 
-### On Linux (recommended)
+- **Nginx** reverse proxy for local domain routing
+- **Gitea** for self-hosted Git repositories
+- **Jenkins** for CI/CD pipelines
+- **SonarQube** with **PostgreSQL** for code analysis
+- **Docker Registry** for storing built images
+- **Prometheus** for metrics collection
+- **Grafana** for dashboards
+- **node-exporter** and **cAdvisor** for host and container metrics
 
-- Docker Engine
-    
-- Docker Compose v2 (`docker compose ...` works)
-    
-- Ports open: **80**, **2222**, **5000** (and optionally others if you expose them)
-    
+---
 
-Check:
+## How the Stack Works
+
+The basic workflow is:
+
+1. You push code to **Gitea**
+2. **Jenkins** pulls the repository
+3. Jenkins runs the pipeline:
+   - tests the app
+   - scans the code with SonarQube
+   - builds a Docker image
+   - pushes the image to the private registry
+4. **Prometheus** collects metrics
+5. **Grafana** shows dashboards for the host and containers
+
+---
+
+## Service URLs
+
+After setup, these services are available through the Nginx reverse proxy:
+
+- Gitea: `http://gitea.local`
+- Jenkins: `http://jenkins.local`
+- SonarQube: `http://sonarqube.local`
+- Grafana: `http://grafana.local`
+- Prometheus: `http://prometheus.local`
+
+Docker Registry runs on:
+
+- `http://<SERVER_IP>:5000`
+
+Replace `<SERVER_IP>` with the IP address of the machine running Docker.
+
+---
+
+## Requirements
+
+Before you start, make sure you have:
+
+- Linux machine or VM
+- Docker installed
+- Docker Compose v2 installed (`docker compose`)
+- At least **4 GB RAM** minimum
+- A few GB of free disk space
+
+Check Docker:
+
 ```
 docker --version
 docker compose version
 ```
 
-### System requirements
+## Important Host Setting for SonarQube
 
-- **RAM:** 4 GB minimum (8 GB recommended)
-    
-- **Disk:** a few GB free (images + volumes)
-    
-
-### SonarQube host setting (important)
-
-SonarQube’s Elasticsearch usually needs:
+SonarQube needs this Linux kernel setting:
 
 ```
 sudo sysctl -w vm.max_map_count=262144
@@ -71,33 +95,67 @@ echo "vm.max_map_count=262144" | sudo tee /etc/sysctl.d/99-sonarqube.conf
 sudo sysctl --system
 ```
 
-## 1) Clone and prepare the config
+If you skip this, SonarQube may fail to start.
+
+---
+
+## Project Structure
+
+This project contains:
+
+- the Docker Compose stack
+    
+- configuration files
+    
+- bootstrap script
+    
+- a demo application inside `demo-app/`
+    
+
+The demo app includes:
+
+- `Dockerfile`
+    
+- `Jenkinsfile`
+    
+- `sonar-project.properties`
+    
+- Node.js application files
+    
+
+---
+
+## Step 1: Clone the Repository
 
 ```
 git clone https://github.com/mahdavi-morteza/docker-mastery.git
 cd projects/devops-stack-ci-observability/devops-stack
 ```
 
-Create your local environment file:
+## Step 2: Create the Environment File
+
+Copy the example environment file:
 
 ```
 cp .env.example .env
 ```
 
-## 2) Add local DNS entries (so the URLs work)
+Then open `.env` and change the passwords to your own values.
 
-This stack uses “local domains” like `gitea.local`, `jenkins.local`, etc.
+---
 
-### Option A (simple): edit `/etc/hosts` on your machine
+## Step 3: Add Local Domain Names
 
-Replace `<SERVER_IP>` with the server IP where Docker runs.
+This project uses local domains like `gitea.local` and `jenkins.local`.
 
+On the computer where you will open the web UI, edit your `/etc/hosts` file:
 
 ```
 sudo nano /etc/hosts
 ```
 
-Add:
+Add this line and replace `<SERVER_IP>` with your Docker host IP:
+
 ```
 <SERVER_IP> gitea.local jenkins.local sonarqube.local grafana.local prometheus.local
 ```
@@ -108,167 +166,181 @@ Example:
 10.0.0.12 gitea.local jenkins.local sonarqube.local grafana.local prometheus.local
 ```
 
-## 3) Start everything (recommended path)
+Save the file.
 
-### One-command bootstrap
+---
 
-Run:
+## Step 4: Start the Stack
+
+The easiest way is to use the bootstrap script:
 
 ```
 ./scripts/bootstrap.sh
 ```
 
-This should:
+This script should:
 
-1. load `.env`
+- load values from `.env`
     
-2. generate Docker Registry auth file (`registry/auth/htpasswd`)
+- generate the Docker Registry auth file
     
-3. start all containers (`docker compose up -d`)
-    
-4. print the URLs
+- start all containers with Docker Compose
     
 
-If everything is OK, you can open:
+You can check running containers with:
 
-- Gitea: `http://gitea.local`
+```
+docker compose ps
+```
+
+If everything starts correctly, open these in your browser:
+
+- `http://gitea.local`
     
-- Jenkins: `http://jenkins.local`
+- `http://jenkins.local`
     
-- SonarQube: `http://sonarqube.local`
+- `http://sonarqube.local`
     
-- Grafana: `http://grafana.local`
+- `http://grafana.local`
     
-- Prometheus: `http://prometheus.local`
+- `http://prometheus.local`
     
 
- **Important:** SonarQube can take 1–3 minutes the first time.  
-If you see a temporary `502 Bad Gateway`, wait a bit and refresh.
-
----
-
-## 4) First-run checklist (UI setup)
-
-### A) Gitea (create org/users/repo)
-
-Open: `http://gitea.local`
-
-1. Login with the admin credentials from `.env` / `.env.example`
-    
-2. Create an **Organization** (example: `acme`)
-    
-3. Create demo users:
-    
-    - `dev1` (developer)
-        
-    - `ci-bot` (used by Jenkins)
-        
-4. Create repo inside org:
-    
-    - `acme/demo-app`
-        
-5. Push the demo app from the `demo-app/` directory (see step 5 below)
-    
+> On the first start, SonarQube may need a few minutes. If you see a temporary `502 Bad Gateway`, wait and refresh.
 
 ---
 
-### B) SonarQube (create token for Jenkins)
+## Step 5: First-Time Setup
 
-Open: `http://sonarqube.local`
+After the containers are running, some services still need manual setup in the browser.
 
-1. Login as admin
+### 5.1 Gitea Setup
+
+Open:
+
+```
+http://gitea.local
+```
+
+
+Do the following:
+
+1. Log in with the admin credentials from `.env`
     
-2. Top-right avatar → **My Account**
+2. Create an organization, for example: `acme`
     
-3. **Security** tab → Tokens
+3. Create users:
     
-4. Create token named `jenkins`
-    
-5. Token type:
-    
-    - Choose **User Token** (best for this project)
+    - `dev1`
         
-6. Copy token (you will paste it into Jenkins credentials)
+    - `ci-bot`
+        
+4. Create a repository inside the organization:
     
+    - `demo-app`
+        
+5. Give `ci-bot` access to the repository
+    
+6. Create an access token for `ci-bot`
+    
+
+This token will be used by Jenkins.
 
 ---
 
-### C) Jenkins (add credentials + create pipeline)
+### 5.2 SonarQube Setup
 
-Open: `http://jenkins.local`
+Open:
 
-1. Login as Jenkins admin (from `.env` / setup wizard)
+```
+http://sonarqube.local
+```
+
+
+Do the following:
+
+1. Log in as admin
     
-2. Go: **Manage Jenkins → Credentials → (System) → Global → Add Credentials**
+2. Open your profile
+    
+3. Go to **My Account → Security**
+    
+4. Generate a token for Jenkins
+    
+5. Copy and save the token
     
 
-Add these credentials:
+You will add this token to Jenkins in the next step.
 
-#### 1) Gitea access (ci-bot)
+---
+
+### 5.3 Jenkins Setup
+
+Open:
+
+```
+http://jenkins.local
+```
+
+Log in with the Jenkins admin account.
+
+Then add these credentials:
+
+Go to:
+
+
+```
+Manage Jenkins → Credentials → Global → Add Credentials
+```
+
+Add the following three credentials.
+
+#### Gitea credentials
 
 - Kind: **Username with password**
     
 - Username: `ci-bot`
     
-- Password: `<ci-bot password>`
+- Password: `<ci-bot password or token>`
     
 - ID: `GITEA_CI_BOT`
     
 
-#### 2) Sonar token
+#### SonarQube token
 
 - Kind: **Secret text**
     
-- Secret: `<token from SonarQube>`
+- Secret: `<your SonarQube token>`
     
 - ID: `SONAR_TOKEN`
     
 
-#### 3) Registry creds
+#### Registry credentials
 
 - Kind: **Username with password**
     
 - Username: `registryuser`
     
-- Password: `<registry password>`
+- Password: `<registry password from .env>`
     
 - ID: `REGISTRY_CREDS`
     
 
-Now create a pipeline job:
-
-1. Jenkins → **New Item**
-    
-2. Name: `demo-app-pipeline`
-    
-3. Type: **Pipeline**
-    
-4. In Pipeline section:
-    
-    - Definition: **Pipeline script from SCM**
-        
-    - SCM: **Git**
-        
-    - Repo URL (inside docker network):  
-        `http://gitea:3000/acme/demo-app.git`
-        
-    - Credentials: **GITEA_CI_BOT**
-        
-    - Branch: `*/main`
-        
-    - Script path: `Jenkinsfile`
-        
-5. Save → **Build Now**
-    
-
 ---
 
-## 5) Push the demo app to Gitea
+## Step 6: Push the Demo App to Gitea
 
-From the demo app folder (adjust path if needed):
+Now push the included demo app to the Gitea repository you created.
+
+Go into the demo app folder:
 
 ```
 cd demo-app
+```
+
+Initialize Git and push the code:
+
+```
 git init
 git add .
 git commit -m "Initial demo app"
@@ -277,127 +349,318 @@ git remote add origin http://gitea.local/acme/demo-app.git
 git push -u origin main
 ```
 
-If it asks for username/password:
+If Git asks for credentials, use a user that has access to the repository, such as `dev1`.
 
-- use `dev1` credentials (or your admin if repo permissions require it)
-    
-
-Once pushed, run the Jenkins pipeline again.
+> Make sure the branch is called `main`. If Jenkins is set to `main` but the repo uses `master`, the pipeline will fail.
 
 ---
 
-## 6) Verify it worked (what to check)
+## Step 7: Create the Jenkins Pipeline Job
+
+In Jenkins:
+
+1. Click **New Item**
+    
+2. Name it: `demo-app-pipeline`
+    
+3. Select **Pipeline**
+    
+4. Choose **Pipeline script from SCM**
+    
+5. Select **Git**
+    
+6. Use this repository URL:
+
+```
+http://gitea:3000/acme/demo-app.git
+```
+
+7. Select credentials: `GITEA_CI_BOT`
+    
+8. Set branch to:
+
+```
+*/main
+```
+
+9. Set script path to:
+```
+Jenkinsfile
+```
+
+10. Save the job
+    
+11. Click **Build Now**
+    
+
+---
+
+## Step 8: Verify Everything Works
 
 ### Jenkins
 
-- Build is green
+The pipeline should pass these stages:
+
+- Test
     
-- Stages show something like:
+- SonarQube Scan
     
-    - **Test → SonarQube Scan → Build & Push**
-        
+- Build
+    
+- Push
+    
 
 ### SonarQube
 
-Open `http://sonarqube.local` → Projects:
+Open SonarQube and check that:
 
-- `demo-app` exists
+- the `demo-app` project exists
     
-- shows analysis results
+- analysis results are visible
+    
+- issues and code quality data are shown
     
 
-### Registry (confirm your image exists)
+### Registry
 
-On the Docker host:
+On the Docker host, check the private registry:
 
 ```
 curl -u registryuser:<REGISTRY_PASSWORD> http://<SERVER_IP>:5000/v2/_catalog
 curl -u registryuser:<REGISTRY_PASSWORD> http://<SERVER_IP>:5000/v2/demo-app/tags/list
 ```
 
-### Grafana/Prometheus
+### Prometheus
 
-- Prometheus targets: `http://prometheus.local/targets` → all UP
-    
-- Grafana dashboards show metrics (Node exporter + cAdvisor)
-    
+Open:
+
+```
+http://prometheus.local/targets
+```
+
+Targets should be `UP`.
+
+### Grafana
+
+Open Grafana and verify the dashboards show host and container metrics.
 
 ---
 
-## 7) Run the demo app image (from registry)
+## Step 9: Run the Demo App from the Registry
 
-After Jenkins pushes the image, pull and run it:
+After Jenkins pushes the image, you can pull and run it manually.
+
+Log in to the registry:
 
 ```
 docker login <SERVER_IP>:5000
+```
+
+Pull the image:
+
+```
 docker pull <SERVER_IP>:5000/demo-app:latest
+```
+
+Run the container:
+
+```
 docker run -d --name demo-app -p 3000:3000 <SERVER_IP>:5000/demo-app:latest
 ```
 
 Then open:
 
-- `http://<SERVER_IP>:3000`
-    
-
-(If your app uses another port, check `demo-app/Dockerfile`.)
+```
+http://<SERVER_IP>:3000
+```
 
 ---
 
-# Stop / Start / Reset (important)
+## Common Docker Commands
 
-## Stop everything (keep data)
+### Show running containers
+
+```
+docker compose ps
+```
+
+### Stop everything but keep data
 
 ```
 docker compose stop
 ```
 
-## Start again (keep data)
+### Start again
+
 ```
 docker compose start
 ```
 
-## Shut down everything (keep data)
+### Remove containers but keep data
 
 ```
 docker compose down
 ```
 
-## FULL RESET (delete all data, clean slate)
+---
 
-Use this if passwords don’t match `.env` anymore, or you want “fresh install”:
+## Full Reset
+
+Sometimes changing values in `.env` is not enough, because services save data inside Docker volumes.
+
+If logins or passwords do not match your new `.env` values, do a full reset:
 
 ```
 docker compose down -v --remove-orphans
 ```
 
-Then rerun:
+Then start again:
 
 ```
 ./scripts/bootstrap.sh
 ```
 
-# Common Problems + Fixes (the pitfalls we hit)
+> This deletes saved service data and gives you a clean fresh install.
 
-### 1) “I changed `.env` but logins didn’t change”
+---
 
-That’s expected. Passwords are stored in volumes after first-run.  
-Fix: `docker compose down -v --remove-orphans` and start fresh.
+## Data Persistence
 
-### 2) Registry auth fails with “unbound variable”
+This project uses Docker volumes for persistent data.
 
-Your script expects a variable name that doesn’t exist (example: `REGISTRY_PASSWORD` vs `REGISTRY_PASS`).  
-Fix: ensure `.env.example` and scripts use the same variable name.
+That means these services keep their data even if containers are removed:
 
-### 3) SonarQube shows 502 / STARTING
+- Gitea
+    
+- Jenkins
+    
+- SonarQube
+    
+- PostgreSQL
+    
+- Registry
+    
+- Prometheus
+    
+- Grafana
+    
 
-Normal on first boot (DB migrations + ES warmup).  
-Wait 1–3 minutes and refresh.
+Because of this, passwords and settings from an earlier run may still exist until you delete the volumes.
 
-### 4) SonarQube fails due to `vm.max_map_count`
+---
 
-Fix: set `vm.max_map_count=262144` (see Requirements section).
+## Troubleshooting
 
-## Proof that everything works and the project is fully functional.
+### I changed `.env`, but the old passwords still work
+
+This is normal.
+
+Many services store credentials in Docker volumes after the first start. Changing `.env` later does not automatically update stored credentials.
+
+Fix:
+
+```
+docker compose down -v --remove-orphans  
+./scripts/bootstrap.sh
+```
+
+---
+
+### SonarQube does not start
+
+Check `vm.max_map_count` first:
+
+```
+sysctl vm.max_map_count
+```
+
+It should be:
+
+```
+262144
+```
+
+If not, set it as described earlier in this README.
+
+---
+
+### SonarQube shows `502 Bad Gateway`
+
+This usually happens only during the first startup.
+
+Wait a few minutes and refresh the page.
+
+---
+
+### Jenkins cannot build Docker images
+
+Make sure Jenkins can access Docker through the mounted socket.
+
+This project uses `/var/run/docker.sock` for that purpose.
+
+If Docker access is missing or permission is wrong, image build and push steps will fail.
+
+---
+
+### Jenkins cannot clone the repo
+
+Check these points:
+
+- the repository exists in Gitea
+    
+- the branch is really named `main`
+    
+- Jenkins is using the correct credentials
+    
+- the SCM URL in Jenkins is correct
+    
+
+Correct internal Gitea URL for Jenkins:
+
+```
+http://gitea:3000/acme/demo-app.git
+```
+
+---
+
+### Registry authentication fails
+
+Make sure:
+
+- the `registry/auth/htpasswd` file exists
+    
+- the username and password in Jenkins match the registry credentials
+    
+- the values in `.env` and the bootstrap script use the same variable names
+    
+
+---
+
+## Security Notes
+
+This project is intentionally simple so it is easy to learn.
+
+For a more secure real-world version, you should add:
+
+- HTTPS / TLS
+    
+- proper DNS
+    
+- Docker secrets or secret management
+    
+- stronger access control
+    
+- token rotation
+    
+- restricted registry access
+    
+
+---
+
+## Screenshots / Proof
+
+The following screenshots show the stack working:
+
 
 ![docker-compose-ls](assets/docker-compose-ls.png)
 

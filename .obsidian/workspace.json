@@ -183,8 +183,9 @@
       "bases:Create new base": false
     }
   },
-  "active": "c3b722e77eb444e3",
+  "active": "27176d0e6aa1e826",
   "lastOpenFiles": [
+    "README.md",
     "assets/tags-proof.png",
     "assets/sonarqube-tokens.png",
     "assets/sonarqube-project-view.png",
@@ -195,8 +196,6 @@
     "assets/prometheus.local.png",
     "assets/monitoring-proog.png",
     "assets/jenkins-pipline-stage-view.png",
-    "assets/jenkins-credentials.png",
-    "assets",
-    "README.md"
+    "assets"
   ]
 }
